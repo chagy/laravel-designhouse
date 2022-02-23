@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Models\User;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\VerifiesEmails;
@@ -43,6 +45,29 @@ class VerificationController extends Controller
 
     public function resend(Request $request)
     {
+        $this->validate($request,[
+            'email' => ['email','required']
+        ]);
 
+        $user = User::where('email',$request->email)->first();
+        if(!$user){
+            return response()->json([
+                "errors" => [
+                    "email" => "No user could be found with this email address"
+                ]
+                ],422);
+        }
+
+        if($user->hasVerifiedEmail()){
+            return response()->json(["errors" => [
+                "message" => "Email address already verified"
+            ]],422);
+        }
+
+        $user->sendEmailVerificationNotification();
+
+        return response()->json([
+            'status' => 'verification link resent'
+        ]);
     }
 }

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\User;
 
 use Illuminate\Http\Request;
+use App\Rules\MatchOldPassword;
+use App\Rules\CheckSamePassword;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
@@ -41,12 +43,14 @@ class SettingsController extends Controller
     public function updatePassword(Request $request)
     {
         $this->validate($request,[
-            'current_password' => ['required'],
-            'password' => ['required','confirmed']
+            'current_password' => ['required',new MatchOldPassword],
+            'password' => ['required','confirmed',new CheckSamePassword]
         ]);
 
         $request->user()->update([
             'password' => bcrypt($request->password)
         ]);
+
+        return response()->json(['message' => 'Password updates']);
     }
 }

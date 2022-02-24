@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DesignResource;
+use Illuminate\Support\Facades\Storage;
 
 class DesignController extends Controller
 {
@@ -31,5 +32,24 @@ class DesignController extends Controller
         ]);
 
         return new DesignResource($design);
+    }
+
+    public function destroy($id)
+    {
+        $design = Design::find($id);
+
+        $this->authorize('delete',$design);
+
+        foreach(['thumbnail','large','original'] as $size){
+            if(Storage::disk($design->disk)->exists("uploads/designs/{$size}/".$design->image)){
+                Storage::disk($design->disk)->delete("uploads/designs/{$size}/".$design->image);
+            }
+        }
+
+        $design->delete();
+
+        return response()->json([
+            'message' => 'Record deleted'
+        ],200);
     }
 }

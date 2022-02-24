@@ -137,6 +137,7 @@ return [
     */
 
     'providers' => [
+        Intervention\Image\ImageServiceProvider::class,
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
         /*
          * Laravel Framework Service Providers...
@@ -191,7 +192,7 @@ return [
     */
 
     'aliases' => [
-
+        'Image' => Intervention\Image\Facades\Image::class,
         'App' => Illuminate\Support\Facades\App::class,
         'Arr' => Illuminate\Support\Arr::class,
         'Artisan' => Illuminate\Support\Facades\Artisan::class,

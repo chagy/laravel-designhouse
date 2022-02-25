@@ -12,17 +12,17 @@ use Illuminate\Foundation\Auth\VerifiesEmails;
 
 class VerificationController extends Controller
 {
-    
+    protected $users;
 
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(IUser $users)
     {
-        $this->middleware('signed')->only('verify');
         $this->middleware('throttle:6,1')->only('verify', 'resend');
+        $this->users = $users;
     }
 
     public function verify(Request $request,User $user)
@@ -51,7 +51,7 @@ class VerificationController extends Controller
             'email' => ['email','required']
         ]);
 
-        $user = User::where('email',$request->email)->first();
+        $user = $this->users->findWhereFirst('email',$request->email);
         if(!$user){
             return response()->json([
                 "errors" => [

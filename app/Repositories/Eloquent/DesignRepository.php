@@ -12,8 +12,9 @@ class DesignRepository extends BaseRepository implements IDesign
         return Design::class;
     }
 
-    public function getDesignsByTag()
+    public function applyTags($id,array $data)
     {
-        
+        $design = $this->find($id);
+        $design->retag($data);
     }
 }

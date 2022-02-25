@@ -16,6 +16,8 @@ Route::group(['middleware' => ['auth:api']],function(){
     Route::put('designs/{id}','Designs\DesignController@update');
     Route::delete('designs/{id}','Designs\DesignController@destroy');
 
+    Route::post('designs/{id}/like','Designs\DesignController@like');
+
     Route::post('designs/{id}/comments', 'Designs\CommentController@store');
     Route::put('comments/{id}', 'Designs\CommentController@update');
     Route::delete('comments/{id}', 'Designs\CommentController@destroy');

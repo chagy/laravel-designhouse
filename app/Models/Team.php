@@ -12,6 +12,19 @@ class Team extends Model
         'slug'
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function($team){
+            $team->members()->attach(auth()->id());
+        });
+
+        static::deleting(function($team){
+            $team->members()->sync([]);
+        });
+    }
+
     public function owner()
     {
         return $this->belongsTo(User::class,'owner_id');

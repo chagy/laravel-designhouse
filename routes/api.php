@@ -8,6 +8,7 @@ Route::get('designs/slug/{slug}','Designs\DesignController@findBySlug');
 Route::get('users','User\UserController@index');
 
 Route::get('teams/slug/{slug}','Teams\TeamsController@findBySlug');
+Route::get('teams/{id}/designs','Designs\DesignController@getForTeam');
 
 Route::get('search/designs','Designs\DesignController@search');
 Route::get('search/designers','User\UserController@search');

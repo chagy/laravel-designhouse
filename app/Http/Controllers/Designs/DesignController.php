@@ -112,4 +112,11 @@ class DesignController extends Controller
 
         return new DesignResource($design);
     }
+
+    public function getForTeam($teamId)
+    {
+        $design = $this->designs->withCriteria([new IsLive()])->findWhere('team_id',$teamId);
+
+        return DesignResource::collection($design);
+    }
 }

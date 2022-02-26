@@ -45,7 +45,7 @@ class Team extends Model
         return $this->members()->where('user_id',$user->id)->first() ? true : false;
     }
 
-    public function invitation()
+    public function invitations()
     {
         return $this->hasMany(Invitation::class);
     }

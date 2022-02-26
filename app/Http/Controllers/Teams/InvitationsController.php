@@ -7,7 +7,9 @@ use App\Models\Team;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Repositories\Contracts\ITeam;
+use App\Repositories\Contracts\IUser;
 use App\Mail\SendInvitationToJoinTeam;
+use App\Repositories\Contracts\IInvitation;
 
 class InvitationsController extends Controller
 {

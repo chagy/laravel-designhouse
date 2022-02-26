@@ -66,9 +66,8 @@ class InvitationsController extends Controller
     public function resend($id)
     {
         $invitation = $this->invitations->find($id);
-        if(!auth()->user()->isOwnerOfTeam($invitation->team)){
-            return response()->json(['emai' => 'You are not the team owner'],401);
-        }
+        $this->authorize('resend',$invitation);
+        
         $recipient = $this->users->findByEmail($invitation->recipient_email);
         Mail::to($invitation->recipient_email)
                 ->send(new SendInvitationToJoinTeam($invitation,!is_null($recipient)));
@@ -78,12 +77,42 @@ class InvitationsController extends Controller
 
     public function respond(Request $request,$id)
     {
+        $this->validate($request,[
+            'token' => ['required'],
+            'decision' => ['required']
+        ]);
 
+        $token = $request->token;
+        $decision = $request->decision;
+        $invitation = $this->invitations->find($id);
+
+        $this->authorize('respond',$invitation);
+
+        if($invitation->token !== $token){
+            return response()->json([
+                'message' => 'Invalid Token'
+            ],401);
+        }
+
+        if($decision !== 'deny'){
+            $this->invitations->addUserToTeam($invitation->team,auth()->id());
+        }
+
+        $invitation->delete();
+        return response()->json([
+            'message' => 'Successful'
+        ],200);
     }
 
     public function destroy($id)
     {
+        $invitation = $this->invitations->find($id);
+        $this->authorize('delete',$invitation);
+        $invitation->delete();
 
+        return response()->json([
+            'message' => 'Deleted'
+        ],200);
     }
 
     protected function createInvitation(bool $user_exists,Team $team,string $email)

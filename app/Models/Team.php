@@ -44,4 +44,14 @@ class Team extends Model
     {
         return $this->members()->where('user_id',$user->id)->first() ? true : false;
     }
+
+    public function invitation()
+    {
+        return $this->hasMany(Invitation::class);
+    }
+
+    public function hasPendingInvite($email)
+    {
+        return (bool)$this->invitations()->where('recipient_email',$email)->count();
+    }
 }
